@@ -14,7 +14,7 @@ Download the [zip ball](https://github.com/timriffe/TimUtils/zipball/master) or 
 # install.packages("devtools")
 
 library(devtools)
-install_github("TimUtils", subdir = "TimUtils", username = "timriffe")
+install_github("timriffe/TimUtils", subdir = "TimUtils")
 
 # then load as you would any package:
 library(TimUtils)
