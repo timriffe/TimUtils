@@ -1,11 +1,12 @@
+setwd("/home/tim/git/TimUtils/TimUtils")
 
 library(devtools)
-load_all("/home/tim/git/TimUtils/TimUtils")
-document("/home/tim/git/TimUtils/TimUtils")
+load_all()
+document()
 
-IncrementVersion("/home/git/TimUtils/TimUtils",)
+versionIncrement(major=TRUE,README=FALSE)
 
-
+getwd()
 #install.packages("devtools")
 #devtools::install_github("devtools")
 

@@ -25,22 +25,22 @@ versionIncrement <- function(wd = getwd(), major=FALSE,mid=FALSE,minor=TRUE,maxd
 	dLine  <- grepl(pattern = "Date: ",DESCRIPTION)
 	VLINE  <- DESCRIPTION[vLine]
 	Vin    <- gsub(VLINE, pattern = "Version: ", replacement = "")
-	Vparts <- strsplit(Vin,split="\\.")
+	Vparts <- strsplit(Vin,split="\\.")[[1]]
 	
 	if (minor){
 		regstr      <- paste0("%0",maxdigits[2],"d")
-		Vparts[[3]] <- sprintf(regstr, as.integer(Vparts[[3]]) + 1)
+		Vparts[3] <- sprintf(regstr, as.integer(Vparts[3]) + 1)
 	}
 	if (mid){
-		Vparts[[3]] <- paste0(rep("0", maxdigits[3]), collapse = "")
+		Vparts[3] <- paste0(rep("0", maxdigits[3]), collapse = "")
 		regstr      <- paste0("%0",maxdigits[2],"d")
-		Vparts[[2]] <- sprintf(regstr, as.integer(Vparts[[2]]) + 1)
+		Vparts[2] <- sprintf(regstr, as.integer(Vparts[2]) + 1)
 	}
 	if (major){
-		Vparts[[2]] <- paste0(rep("0", maxdigits[2]), collapse = "")
-		Vparts[[3]] <- paste0(rep("0", maxdigits[3]), collapse = "")
+		Vparts[2] <- paste0(rep("0", maxdigits[2]), collapse = "")
+		Vparts[3] <- paste0(rep("0", maxdigits[3]), collapse = "")
 		regstr      <- paste0("%0",maxdigits[1],"d")
-		Vparts[[1]] <- sprintf(regstr, as.integer(Vparts[[1]]) + 1)
+		Vparts[1] <- sprintf(regstr, as.integer(Vparts[1]) + 1)
 	}
 	
 	# get new version string
