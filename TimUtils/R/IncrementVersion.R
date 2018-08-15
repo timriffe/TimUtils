@@ -1,33 +1,73 @@
-#' @title increment package version minor number for a given patch or update.
+#' @title increment package version number for a given patch or update.
 #' 
-#' @description This function should allow for more regular minor version number increments. Previously this was done manually and so usually forgotten. Include a call to this in the build script for each package.
+#' @description Increment the version number, and update the DESCRIPTION and README.md files accordingly.
+#' @details Note higher order version increments reset the counter to lower order version increments. So, \code{major = TRUE} sets the middle and final version numbers to 0s. The default version digit structure follows this format: \code{"00.00.000"}, but you can alter the field widths using the \code{maxdigits} argument. The README badge assumes that you have a line of the form: \code{[![](https://img.shields.io/badge/devel%20version-0.6.113-yellow.svg)](https://github.com/timriffe/DemoTools)} in your README (as produced by the badger package). The version number just gets swapped out in that case. If you don't have a README, or if the README doesn't already containt such a badge, then it's ignored.
 #' 
-#' @param package.path file path to package folder, ending in package name.
-#' @param major.version major version number. Change this manually only when there is a major change
-#' @param package.origin the package birth date, used to infer package age, which determines the minor number. If you want the minor number to reset to 0 when a major version increment happens, then change this date when you make a major increment. It's also OK to just leave it referenced to the primary package birth date.
+#' @param wd file path to package folder, ending in package name.
+#' @param major logical. Shall we increment the major version number? Default FALSE
+#' @param mid logical. Shall we increment the middle version number? Default FALSE
+#' @param minor logical. Shall we increment the minor version number? Default TRUE
+#' @param maxdigits integer vector of length 3, default \code{c(2,2,3)}.
+#' @param README logical. Update the development version badge in the README, see details. Default TRUE.
 #' 
-#' @return nothing is returned. Package called for the side effect of modifying the date and version elements of the \code{DESCRIPTION} file.
+#' @return nothing is returned. Package called for the side effect of modifying the date and version elements of the \code{DESCRIPTION} file and possibly the \code{README.md} file.
 #' 
 #' @export
 #' 
-IncrementVersion <- function(package.path, major.version="01",package.origin = "2011-01-01"){
-    # now update DESCRIPTION
-    # get time difference from origin
-    increment <-  as.numeric(
-            Sys.time() - 
-                    as.POSIXct(as.Date(package.origin), 
-                            origin = ISOdatetime(1960,1,1,0,0,0),tz="PST")
-    )
-    
-    # determine new version number:
-    pkg.vs    <- paste0("Version: ",major.version, ".", as.character(round(increment / 365.25, digits = 4)))
-    pkg.dt    <- paste0("Date: ", Sys.Date())
-    
-    # update version in DESCRIPTION file:
-    DESC      <- readLines(file.path(package.path, "DESCRIPTION"))
-    Version.i <- grep(DESC, pattern = "Version:")
-    Date.i    <- grep(DESC, pattern = "Date:")
-    DESC[Version.i] <- pkg.vs
-    DESC[Date.i]    <- pkg.dt
-    writeLines(DESC, file.path(package.path,"DESCRIPTION"))
+versionIncrement <- function(wd = getwd(), major=FALSE,mid=FALSE,minor=TRUE,maxdigits=c(2,2,3),
+		README = TRUE){
+	dpath <- file.path(wd,"DESCRIPTION")
+	rpath <- file.path(wd,"README.md")
+	# scrape present version
+	DESCRIPTION <- readLines(dpath)
+	
+	vLine  <- grepl(pattern = "Version: ",DESCRIPTION)
+	dLine  <- grepl(pattern = "Date: ",DESCRIPTION)
+	VLINE  <- DESCRIPTION[vLine]
+	Vin    <- gsub(VLINE, pattern = "Version: ", replacement = "")
+	Vparts <- strsplit(Vin,split="\\.")
+	
+	if (minor){
+		regstr      <- paste0("%0",maxdigits[2],"d")
+		Vparts[[3]] <- sprintf(regstr, as.integer(Vparts[[3]]) + 1)
+	}
+	if (mid){
+		Vparts[[3]] <- paste0(rep("0", maxdigits[3]), collapse = "")
+		regstr      <- paste0("%0",maxdigits[2],"d")
+		Vparts[[2]] <- sprintf(regstr, as.integer(Vparts[[2]]) + 1)
+	}
+	if (major){
+		Vparts[[2]] <- paste0(rep("0", maxdigits[2]), collapse = "")
+		Vparts[[3]] <- paste0(rep("0", maxdigits[3]), collapse = "")
+		regstr      <- paste0("%0",maxdigits[1],"d")
+		Vparts[[1]] <- sprintf(regstr, as.integer(Vparts[[1]]) + 1)
+	}
+	
+	# get new version string
+	vNew     <- paste(unlist(Vparts),collapse = ".")
+	vLINEnew <- paste0("Version: ", vNew)
+	DESCRIPTION[vLine] <- vLINEnew
+	
+	# also increment date
+	DESCRIPTION[dLine] <- paste0("Date: ",Sys.Date())
+	
+	# write new description:
+	writeLines(DESCRIPTION,dpath)
+	
+	if (README){
+		# update README badge:
+		README     <- readLines("README.md")
+		badgei     <- grepl("devel%20version",README)
+		if (sum(badgei) == 1){
+			badgenow   <- README[badgei]
+			badgeparts <- strsplit(badgenow,split = "-")
+			badgeparts[[1]][2] <- vNew
+			badegeout  <- paste0(unlist(badgeparts),collapse = "-")
+			# insert
+			README[badgei] <- badegeout
+			
+			# write new description:
+			writeLines(README,"README.md")
+		}
+	}
 }

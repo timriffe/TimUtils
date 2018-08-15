@@ -14,3 +14,5 @@ Depends:
     R (>= 2.15),
 Collate:
     'IncrementVersion.R'
+RoxygenNote: 6.1.0
+Encoding: UTF-8 

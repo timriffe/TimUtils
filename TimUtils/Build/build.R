@@ -1,9 +1,9 @@
 
 library(devtools)
-load_all("/home/triffe/git/TimUtils/TimUtils")
-document("/home/triffe/git/TimUtils/TimUtils")
+load_all("/home/tim/git/TimUtils/TimUtils")
+document("/home/tim/git/TimUtils/TimUtils")
 
-IncrementVersion("/home/triffe/git/TimUtils/TimUtils",major.version="01",package.origin = "2014-02-08")
+IncrementVersion("/home/git/TimUtils/TimUtils",)
 
 
 #install.packages("devtools")
