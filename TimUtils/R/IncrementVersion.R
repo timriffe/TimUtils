@@ -58,6 +58,10 @@ versionIncrement <- function(wd = getwd(), major=FALSE,mid=FALSE,minor=TRUE,maxd
 		# update README badge:
 		README     <- readLines("README.md")
 		badgei     <- grepl("devel%20version",README)
+		dLine      <- grepl(pattern = "Date: ",README)
+		if (any(dLine)){
+			README[dLine] <- paste0("Date: ",Sys.Date())
+		}
 		if (sum(badgei) == 1){
 			badgenow   <- README[badgei]
 			badgeparts <- strsplit(badgenow,split = "-")

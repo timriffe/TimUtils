@@ -1,8 +1,8 @@
 Package: TimUtils
 Type: Package
 Title: TimUtils functions for package building
-Version: 02.00.000
-Date: 2018-08-15
+Version: 02.00.01
+Date: 2018-08-16
 Author: Tim Riffe
 Maintainer: Tim Riffe <tim.riffe@gmail.com>
 Description: Small batch of frequently used functions for package building, and

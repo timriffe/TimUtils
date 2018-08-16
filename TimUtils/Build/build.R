@@ -4,7 +4,7 @@ library(devtools)
 load_all()
 document()
 
-versionIncrement(major=TRUE,README=FALSE)
+versionIncrement(minor=TRUE,README=FALSE)
 
 getwd()
 #install.packages("devtools")
