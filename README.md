@@ -13,10 +13,9 @@ Installation
 
 
 ```r
-# install.packages("devtools")
+# install.packages("remotes")
 
-library(devtools)
-install_github("timriffe/TimUtils/TimUtils")
+remotes::install_github("timriffe/TimUtils")
 
 # then load as you would any package:
 library(TimUtils)

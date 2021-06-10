@@ -14,7 +14,11 @@
 #' 
 #' @export
 #' 
-versionIncrement <- function(wd = getwd(), major=FALSE,mid=FALSE,minor=TRUE,maxdigits=c(2,2,3),
+versionIncrement <- function(wd = getwd(), 
+                             major=FALSE,
+                             mid=FALSE,
+                             minor=TRUE,
+                             maxdigits=c(2,2,3),
 		README = TRUE){
 	dpath <- file.path(wd,"DESCRIPTION")
 	rpath <- file.path(wd,"README.md")
